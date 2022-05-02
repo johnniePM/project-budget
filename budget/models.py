@@ -29,8 +29,8 @@ class TheDay(models.Model):
             for item in DagligaInkomster.objects.filter(the_day__date__contains=self.date):
                 self.totalInkomst+= item.amount
         except:
-            self.pk=year+month+day
-            self.date=current_date
+                pass
+            
 
         return super(TheDay, self).save(*args, **kwargs)
 

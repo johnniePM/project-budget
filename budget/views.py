@@ -1,7 +1,6 @@
 from asyncio.windows_events import NULL
 import datetime
 import json
-from pyexpat import model
 from django.shortcuts import redirect, render
 from django.views.generic import View,CreateView, UpdateView, TemplateView
 from datetime import timedelta
@@ -105,6 +104,18 @@ class IdagsView(TemplateView):
         if not TheDay.objects.filter(date=current_date).exists():
             instance=TheDay(date=current_date)
             instance.save()
+            date=[]
+            d=[]
+            m=[]
+            y=[]
+            for x in range(7):
+
+                date.append( current_date+ timedelta(days=-x-1))
+                d.append(date[x-1].day)
+                m.append(date[x-1].month)
+                y.append(date[x-1].year)
+                ins=TheDay(date=date[x-1], id=y[x-1]*10000+d[x-1]+m[x-1]*100)
+                ins.save()
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
     
@@ -112,12 +123,25 @@ class IdagsView(TemplateView):
         context = super().get_context_data(**kwargs)
         idag=TheDay.objects.get(date=current_date)
         context['idag']= idag
-        if  idag.totalUtgift+idag.totalInkomst==0:
+        if  idag.totalUtgift+idag.totalInkomst!=0:
             context['perut']= int((idag.totalUtgift /(idag.totalUtgift+idag.totalInkomst))*100)
             context['perin']= int((idag.totalInkomst /(idag.totalUtgift+idag.totalInkomst))*100)
         else:
             context['perut']= int(100)
             context['perin']= int(100)
+            date=[]
+            d=[]
+            m=[]
+            y=[]
+        for x in range(7):
+            date.append( current_date+ timedelta(days=-x-1))
+            d.append(date[x-1].day)
+            m.append(date[x-1].month)
+            y.append(date[x-1].year)
+        context['date']=date
+        context['d']=d
+        context['m']=m
+        context['y']=y
         context['utgifter'] = DagligaUtgifter.objects.filter(the_day__date=current_date).order_by('amount')
         context['inkomster'] = DagligaInkomster.objects.filter(the_day__date__contains=current_date)
         context['indata'] =json.dumps( [
