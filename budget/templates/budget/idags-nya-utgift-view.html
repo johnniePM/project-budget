@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+   <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+   <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+
+
+
+   <!-- Total spending-->
+   <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2 hover">
+         <div class="card-body">
+            <div class="row no-gutters align-items-center">
+               <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Totala utgifter Idag
+                  </div>
+                  <div class="row no-gutters align-items-center">
+                     <div class="col-auto">
+                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ idag.totalUtgift }}</div>
+                     </div>
+                     <div class="col">
+                        <div class="progress progress-sm mr-2">
+                           <div class="progress-bar bg-info" role="progressbar" style="width: {{perut}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-auto">
+                  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Total income -->
+   <div class="col-xl-6 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-100 py-2 hover">
+         <div class="card-body">
+            <div class="row no-gutters align-items-center">
+               <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                     Totala Inkomster Idag</div>
+                  <div class="row no-gutters align-items-center">
+                     <div class="col-auto">
+                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ idag.totalInkomst }}</div>
+                     </div>
+                     <div class="col">
+                        <div class="progress progress-sm mr-2">
+                           <div class="progress-bar bg-info" role="progressbar" style="width: {{perin}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-auto">
+                  <i class="fas fa-comments fa-2x text-gray-300"></i>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Content Row -->
+
+<div class="row">
+
+   <!-- Area Chart -->
+   <div class="col-xl-8 col-lg-7">
+      <div class="card shadow mb-4 hover">
+         <!-- Card Header - Dropdown -->
+         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+            <div class="dropdown no-arrow">
+               <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+               </a>
+               <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                  <div class="dropdown-header">Dropdown Header:</div>
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+               </div>
+            </div>
+         </div>
+         <!-- Card Body -->
+         <div class="card-body">
+            <div class="chart-area">
+               <div style="display: none" id="utdata" data-json="{{ utdata }}"></div>
+               <div style="display: none" id="indata" data-json="{{ indata }}"></div>
+               <div style="display: none" id="veckoutdata" data-json="{{ veckoutdata }}"></div>
+
+               <canvas id="myAreaChart"></canvas>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Pie Chart -->
+   <div class="col-xl-4 col-lg-5">
+      <div class="card shadow mb-4 hover">
+         <!-- Card Header - Dropdown -->
+         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+
+         </div>
+         <!-- Card Body -->
+         <div class="card-body">
+            <div class="chart-pie pt-4 pb-2">
+               <canvas id="myPieChart"></canvas>
+            </div>
+            <div class="mt-4 text-center small">
+               <span class="mr-2">
+                  <i class="fas fa-circle text-primary"></i> Inkomst
+               </span>
+               <span class="mr-2">
+                  <i class="fas fa-circle text-success"></i> Utgift
+               </span>
+
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+
+   <!-- Content Column -->
+   <div class="col-lg-6 mb-4">
+      <h1 class="h3 mb-4 text-gray-800 mx-auto text-center">Utgifter</h1>
+
+      <!-- Project Card Example -->
+      <div class="row">
+         {% for item in utgifter %}
+         <a class="col-xl-6 col-md-6 mb-4 " style="cursor:pointer;text-decoration: none;">
+            <div class="card border-left-success shadow h-100 py-2 hover">
+               <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                     <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                           {{item.name}}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">sek {{item.amount}}</div>
+                     </div>
+                     <div class="col-auto">
+                        <i class="fa fa-minus fa-2x text-gray-300"></i>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </a>
+         {% endfor %}
+
+         <form class="col-xl-6 col-md-6 mb-4 " style="text-decoration: none;" method="post">
+            {% csrf_token %}
+
+            <div class="card border-left-success shadow h-100 py-2 hover">
+               <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                     <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                           <input name="name" maxlength="100" required="" id="id_name" type="text" class="  form-control-sm col-6" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                           <input name="amount" value="0" required="" id="id_amount" type="number" class="form-control-sm col-6" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                           sek</div>
+                     </div>
+                     <button class="col-auto btn" type="submit">
+                        <i class="fa fa-save fa-2x text-gray-300"></i>
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+
+
+   <!-- Inkomster -->
+   <div class="col-lg-6 mb-4">
+      <h1 class="h3 mb-4 text-gray-800 mx-auto text-center">Inkomster</h1>
+      <div class="row">
+         {% for item in inkomster %}
+         <a class="col-xl-6 col-md-6 mb-4 " style="cursor:pointer;text-decoration: none;" data-bs-toggle="modal" data-bs-target="#ModalToggle">
+            <div class="card border-left-primary shadow h-100 py-2 hover">
+               <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                     <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                           {{item.name}}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">sek {{item.amount}}</div>
+                     </div>
+                     <div class="col-auto">
+                        <i class="fa fa-minus fa-2x text-gray-300"></i>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </a>
+         <!-- Modal -->
+         <div class="modal fade" id="ModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalToggleLabel">{{item.name}}</h5>
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                     {{item.kommentar}}
+                  </div>
+                  <div class="modal-footer">
+                     <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-bs-dismiss="modal">Edit</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+         {% endfor %}
+         <a class="col-xl-6 col-md-6 mb-4 " style="cursor:pointer;text-decoration: none;" href="{% url 'budget:idag-nya-in' %}">
+            <div class="card border-left-primary shadow h-100 py-2 hover">
+               <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                     <div class="col mr-2">
+
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Lägg till en Inkomst</div>
+                     </div>
+                     <div class="col-auto">
+                        <i class="fa fa-minus fa-2x text-gray-300"></i>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </a>
+      </div>
+   </div>
+</div>
+
+
+<style>
+   .hover {
+      transition: box-shadow .3s;
+
+   }
+
+   .hover:hover {
+      box-shadow: 2px 10px 20px rgba(0, 0, 0, .5) !important;
+
+   }
+</style>
+<script>
+   const ACTIVE_CLASS = "block--active";
+   const TRANSITION_CLASS = "block--transition";
+   const SVG_ICON = "mine"
+   const getTransforms = (a, b) => {
+      const scaleY = a.height / b.height;
+      const scaleX = a.width / b.width;
+
+      // dividing by 2 centers the transform since the origin
+      // is centered not top left
+      const translateX = a.left + a.width / 2 - (b.left + b.width / 2);
+      const translateY = a.top + a.height / 2 - (b.top + b.height / 2);
+
+      // nothing particularly clever here, just using the
+      // translate amount to estimate a rotation direction/amount.
+      // ends up feeling pretty natural to me.
+      const rotate = translateX;
+
+      return [
+         `translateX(${translateX}px)`,
+         `translateY(${translateY}px)`,
+         `rotate(${rotate}deg)`,
+         `scaleY(${scaleY})`,
+         `scaleX(${scaleX})`
+      ].join(" ");
+   };
+
+   const animate = (block, transforms, oldTransforms) => {
+      block.style.transform = transforms;
+      block.getBoundingClientRect(); // force redraw
+      block.classList.add(TRANSITION_CLASS);
+      block.style.transform = oldTransforms;
+      block.addEventListener(
+         "transitionend",
+         () => {
+            block.removeAttribute("style");
+         }, {
+            once: true
+         }
+      );
+   };
+
+   [...document.querySelectorAll(".block")].forEach(block => {
+      const buttonForBlock = block.querySelector(".block-content__button");
+      block.addEventListener("click", event => {
+         if (
+            block.classList.contains(ACTIVE_CLASS) &&
+            event.target !== buttonForBlock
+         ) {
+            return;
+         }
+
+         block.classList.remove(TRANSITION_CLASS);
+         const inactiveRect = block.getBoundingClientRect();
+         const oldTransforms = block.style.transform;
+         block.classList.toggle(ACTIVE_CLASS);
+         const activeRect = block.getBoundingClientRect();
+         const transforms = getTransforms(inactiveRect, activeRect);
+
+         animate(block, transforms, oldTransforms);
+      });
+   });
+</script>
+{% endblock content %}

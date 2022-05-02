@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<form action="" method="post">
+ {% csrf_token %}
+ <p>
+   <label for="id_amount">Amount:</label>
+   <input type="number" name="amount" value="0" required="" id="id_amount">
+   
+   
+ </p>
+
+ 
+ <p>
+   <label for="id_klient">Klient:</label>
+   <input name="klient" id="id_klient">
+</input>
+   
+   
+ </p>
+
+ 
+ <p>
+   <label for="id_kommentar">Kommentar:</label>
+   <textarea name="kommentar" cols="40" rows="10" id="id_kommentar"></textarea>
+   
+   
+</p>
+  <button type="submit"></button>
+   </form>
+{% endblock content %}
